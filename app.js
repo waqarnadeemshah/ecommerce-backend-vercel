@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://ecommerce-frontend-vercel-ebi8.vercel.app/a" 
+    "https://ecommerce-frontend-vercel-ebi8.vercel.app"
   ],
   credentials: true
 }));
@@ -29,23 +29,13 @@ app.use(cors({
 app.use(cookieParser());
 
 
-// TEST ROUTE (important for Vercel)
+// TEST ROUTE
 app.get("/", (req, res) => {
   res.send("Backend is running successfully 🚀");
 });
 
 
-// routes
-app.use("/api/admin", adminroutes);
-app.use("/api/user", userRouter);
-app.use("/api", catroute);
-app.use("/api/auth", authrouter);
-app.use("/api/cart", cartrouter);
-app.use("/api/order", orderrouter);
-app.use("/api/admin/sales", salesRouter);
-
-
-
+// MongoDB connection
 let isConnected = false;
 
 const connectDB = async () => {
@@ -60,8 +50,23 @@ const connectDB = async () => {
   }
 };
 
-connectDB();
+
+// important middleware for serverless
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 
-// IMPORTANT: export app
+// routes
+app.use("/api/admin", adminroutes);
+app.use("/api/user", userRouter);
+app.use("/api", catroute);
+app.use("/api/auth", authrouter);
+app.use("/api/cart", cartrouter);
+app.use("/api/order", orderrouter);
+app.use("/api/admin/sales", salesRouter);
+
+
+// export for Vercel
 export default app;
