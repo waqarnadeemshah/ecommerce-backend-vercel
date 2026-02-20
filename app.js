@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://ecommerce-frontend-vercel-ebi8.vercel.app"
+    "http://ecommerce-frontend-vercel-2z4o.vercel.app"
   ],
   credentials: true
 }));
