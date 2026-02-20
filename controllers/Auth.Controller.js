@@ -75,12 +75,15 @@ export const login = async (req, res) => {
     const refreshtoken = generateresfresstoken(userdata);
     userdata.refreshtoken = refreshtoken;
     await userdata.save();
-    res.cookie("refreshtoken", refreshtoken, {
-      httpOnly: true,
+ 
+res.cookie("refreshtoken", refreshtoken, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  path: "/"
+});
 
-      secure: false,  
-  sameSite: "lax"
-    });
+
     res.status(200).json({
       sucess: true,
       acesstoken,
@@ -107,10 +110,15 @@ export const regeneratetoken = async (req, res) => {
     const reregenreatefreshtoken = generateresfresstoken(userdata);
     userdata.refreshtoken = reregenreatefreshtoken;
     await userdata.save();
+
+
+
     res.cookie("refreshtoken", reregenreatefreshtoken ,{
-      httpOnly: true,
-      secure: true,
-    });
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  path: "/"
+});
     res.status(200).json({
       sucess: true,
       regenerateacesstoken,
@@ -132,7 +140,15 @@ export const logout = async (req, res) => {
       userdata.refreshtoken = null;
        await userdata.save();
     }
-    res.clearCookie("refreshtoken");
+ 
+
+
+    res.clearCookie("refreshtoken", {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  path: "/"
+});
     res.status(200).json({ sucess: true, msg: "loggout sucessfully" });
   } catch (err) {
     res.status(500).json({ sucess: false, error: err.message });
